@@ -2,12 +2,12 @@
 
 // ESTRUCTURA FIJA PARA MONGODB
 
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
-const userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema({
     username: {
         type: String,
-        requird: true,
+        required: true,
         trim: true
     },
     email: {
@@ -20,6 +20,8 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true
     }
+}, {
+    timestamps: true
 })
 
 export default mongoose.model('User', userSchema)
