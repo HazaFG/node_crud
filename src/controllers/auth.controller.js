@@ -52,4 +52,51 @@ export const register = async (req, res) => {
     
 }
 
-export const login = (req, res) => {res.send('login')}
+//Van en formato json
+export const login = async (req, res) => {
+    // console.log(email, password, username)
+
+    //Hacemos un request de estos tres parametros
+    const {email, password } = req.body
+
+    try {
+        //Buscamoso un usuario
+        const usuarioEncontrado = await User.findOne({email})
+
+        //Validar en caso de que no exista
+        if(!usuarioEncontrado) return res.status(400).json({message: "Usuario no encontrado"})
+
+        //Si coincide que compare la password
+                                        //compare devuele un true o un false
+        const coincide = await bcrypt.compare(password, usuarioEncontrado.password) //Aqui usamos compare para comparar la contrase;a y ver si es correcta
+
+        // Si no coincide
+        if(!coincide) return res.status(400).json({message: "No coincide el password"})
+
+        //Creamos el token pero ahora con el usuario encontrado
+        const token = await createAccessToken({id: usuarioEncontrado._id});
+
+        //Mandamos la respuesta
+        res.cookie("token", token);
+        //vamos a mandar un dato al frontend
+        res.json({
+            id: usuarioEncontrado._id,
+            username: usuarioEncontrado.username,
+            email: usuarioEncontrado.email,
+            createdAt: usuarioEncontrado.createdAt,
+            updateAt: usuarioEncontrado.updatedAt,
+        })
+
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+    
+}
+
+//Cerrar sesion
+export const logout = (req, res) => {
+    res.cookie('token', "", {
+        expires: new Date(0)
+    })
+    return res.sendStatus(200)
+}
