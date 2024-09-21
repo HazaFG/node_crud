@@ -4,8 +4,10 @@ import morgan from 'morgan';
 let array = [1,2,3,4]
 
 import authRoutes from './routes/auth.routes.js'
+import cookieParser from 'cookie-parser';
 
 const app = express()
+app.use(cookieParser())
 
 //morgan muestra las peticiones que han llegado por consola
 app.use(morgan('dev'))
