@@ -1,5 +1,6 @@
 import express, { json } from 'express'
 import morgan from 'morgan';
+import cors from 'cors'
 
 let array = [1,2,3,4]
 
@@ -8,6 +9,11 @@ import taskRoutes from './routes/tasks.routes.js'
 import cookieParser from 'cookie-parser';
 
 const app = express()
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+}));
+
 app.use(cookieParser())
 
 //morgan muestra las peticiones que han llegado por consola
